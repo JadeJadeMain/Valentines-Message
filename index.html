@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message For You 💌</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            overflow: hidden;
+            /* Prevent scrollbars from floating hearts */
+        }
+
+        .handwritten {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Floating Heart Animation */
+        .heart {
+            position: absolute;
+            bottom: -20px;
+            animation: floatUp 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Scanline / Overlay effect for premium feel */
+        .overlay {
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        /* Button Pulse */
+        @keyframes softPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 25px rgba(255, 105, 180, 0.8);
+            }
+        }
+
+        .btn-pulse {
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(255, 255, 255, 0);
+            /* Removed color */
+            /* backdrop-filter: blur(12px); */
+            /* Usually user means they want transparency */
+            border: 1px solid rgba(255, 255, 255, 0);
+            /* Also remove border? Or keep? */
+            box-shadow: none;
+            /* Probably remove shadow */
+        }
+
+        /* Slow Spin utility */
+        .animate-spin-slow {
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Float animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Scroll / Parchment Texture */
+        .parchment-texture {
+            background-color: #fcf5e5;
+            background-image:
+                url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"),
+                linear-gradient(to bottom, rgba(120, 53, 15, 0.1) 0%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, rgba(120, 53, 15, 0.1) 100%);
+            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.1);
+        }
+
+        /* Hide Scrollbar for clean look */
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Utility for hiding/showing pages with fade */
+        .fade-enter {
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-exit {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+        }
+
+        .hidden-page {
+            display: none;
+            opacity: 0;
+        }
+
+        /* Typewriter Cursor */
+        .cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Envelope 3D Animation Utilities */
+        .envelope-container {
+            perspective: 1000px;
+        }
+
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .group:hover .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-letter {
+            transition: transform 0.6s ease-in-out 0.2s;
+            /* Delay to wait for flap */
+        }
+
+        .group:hover .envelope-letter {
+            transform: translateY(-40px);
+        }
+    </style>
+</head>
+
+<body class="h-screen w-screen relative bg-black overflow-hidden transition-colors duration-1000" id="body-bg">
+
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+        <img src="bq.jpg" class="w-full h-full object-cover opacity-60 transition-opacity duration-1000" id="bg-img"
+            alt="Background">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bg-music" loop>
+        <source src="El_Manu_-_Tahanan_Lyrics_LOW.mp4" type="audio/mp4">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Floating Hearts Container -->
+    <div id="hearts-container" class="absolute inset-0 pointer-events-none z-0"></div>
+
+    <!-- Overlay Texture & Vignette -->
+    <div class="absolute inset-0 overlay z-10 opacity-40"></div>
+    <div class="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(transparent_0%,rgba(0,0,0,0.5)_100%)]">
+    </div>
+
+    <!-- Page 1: Landing -->
+    <div id="page1"
+        class="absolute inset-0 flex flex-col items-center justify-center z-20 transition-opacity duration-1000 p-4">
+
+        <!-- Glassmorphism Card -->
+        <div
+            class="p-6 md:p-14 rounded-[2rem] md:rounded-[2.5rem] flex flex-col items-center text-center transform hover:scale-[1.02] transition-transform duration-700 ease-in-out relative max-w-sm md:max-w-none w-full md:w-auto">
+
+            <!-- Decorative Elements -->
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-rose-500/40 rounded-full blur-2xl animate-pulse"></div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-500/40 rounded-full blur-2xl animate-pulse"
+                style="animation-delay: 1s;"></div>
+
+            <!-- Main Visual: Project Image -->
+            <div class="mb-6 md:mb-10 relative group cursor-pointer">
+                <div class="relative w-56 h-56 md:w-80 md:h-80 flex items-center justify-center">
+
+                    <!-- Back Glow -->
+                    <div
+                        class="absolute inset-0 bg-rose-500/30 rounded-full blur-3xl group-hover:bg-rose-500/50 transition-all duration-500">
+                    </div>
+
+                    <!-- Image Placeholder -->
+                    <!-- Animated Love Letter Envelope -->
+                    <!-- Animated Love Letter Envelope -->
+                    <div
+                        class="relative z-10 w-full h-full flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500 envelope-container">
+                        <div
+                            class="relative w-40 h-28 md:w-52 md:h-36 bg-white shadow-2xl rounded-sm flex items-end justify-center overflow-visible">
+
+                            <!-- Letter inside (Hidden initially, slides up) -->
+                            <div
+                                class="absolute bottom-0 w-[90%] h-[85%] bg-pink-50 border border-pink-100 shadow-sm layer z-10 envelope-letter flex flex-col items-center justify-start pt-4 rounded-t-sm">
+                                <div class="w-20 h-1.5 bg-rose-200/50 rounded mb-2"></div>
+                                <div class="w-24 h-1.5 bg-rose-200/50 rounded mb-2"></div>
+                                <div class="w-16 h-1.5 bg-rose-200/50 rounded"></div>
+                                <div class="mt-2 text-2xl animate-pulse">❤️</div>
+                            </div>
+
+                            <!-- Envelope Body (Front Pocket) -->
+                            <div class="absolute bottom-0 left-0 w-full h-full z-20 pointer-events-none">
+                                <div
+                                    class="w-0 h-0 border-l-[80px] md:border-l-[104px] border-r-[80px] md:border-r-[104px] border-b-[60px] md:border-b-[75px] border-l-transparent border-r-transparent border-b-rose-100 absolute bottom-0 left-0">
+                                </div> <!-- Bottom triangle -->
+                                <div
+                                    class="w-0 h-0 border-l-[80px] md:border-l-[104px] border-t-[50px] md:border-t-[70px] border-b-[50px] md:border-b-[70px] border-l-rose-50 border-t-transparent border-b-transparent absolute left-0 bottom-0">
+                                </div> <!-- Left triangle -->
+                                <div
+                                    class="w-0 h-0 border-r-[80px] md:border-r-[104px] border-t-[50px] md:border-t-[70px] border-b-[50px] md:border-b-[70px] border-r-rose-50 border-t-transparent border-b-transparent absolute right-0 bottom-0">
+                                </div> <!-- Right triangle -->
+                            </div>
+
+                            <!-- Flap + Seal Wrapper (Rotates together) -->
+                            <div class="absolute top-0 left-0 w-full z-30 envelope-flap origin-top">
+                                <!-- Flap Triangle -->
+                                <div
+                                    class="w-0 h-0 border-l-[80px] md:border-l-[104px] border-r-[80px] md:border-r-[104px] border-t-[65px] md:border-t-[80px] border-l-transparent border-r-transparent border-t-rose-200 drop-shadow-md">
+                                </div>
+
+                                <!-- Heart Seal (Positioned at tip of flap) -->
+                                <div
+                                    class="absolute top-[55px] md:top-[70px] left-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
+                                    <div
+                                        class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center shadow-md border-2 border-red-400">
+                                        <i data-lucide="heart" class="w-4 h-4 text-white fill-current"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Floating Pollen/Sparkles -->
+                    <div class="absolute inset-0 animate-spin-slow pointer-events-none z-20">
+                        <div class="absolute top-0 left-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_white]">
+                        </div>
+                        <div class="absolute bottom-1/4 right-0 w-1 h-1 bg-white/70 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-7xl text-white font-bold drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] mb-2 md:mb-4 text-center tracking-tight"
+                style="font-family: 'Dancing Script', cursive;">
+                Happy Valentine's Day
+            </h1>
+            <p
+                class="text-white/90 text-lg md:text-2xl mb-8 md:mb-12 font-medium tracking-wide drop-shadow-sm font-handwritten">
+                A little surprise just for you...
+            </p>
+
+            <!-- The 'Inbox' Element -->
+            <button id="open-btn"
+                class="group relative px-8 py-4 md:px-10 md:py-5 bg-white/90 hover:bg-white text-rose-600 rounded-full font-bold text-lg md:text-xl shadow-[0_10px_40px_-10px_rgba(255,105,180,0.5)] transition-all hover:scale-105 active:scale-95 btn-pulse flex items-center gap-3 md:gap-4 backdrop-blur-sm">
+                <span class="relative z-10">Read Your Letter</span>
+                <span class="text-xl md:text-2xl group-hover:rotate-12 transition-transform duration-300">💌</span>
+                <div
+                    class="absolute inset-0 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0">
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Page 2: The Heart-to-Heart -->
+    <div id="page2"
+        class="absolute inset-0 flex flex-col items-center justify-center z-20 opacity-0 pointer-events-none transition-opacity duration-1000 hidden">
+
+        <div class="max-w-xl w-full px-4 md:px-0">
+
+            <!-- Royal Scroll Design -->
+            <div class="relative w-full max-w-lg mx-auto transform transition-all duration-1000 opacity-0 translate-y-20"
+                id="scroll-container">
+
+                <!-- Scroll Top Roller -->
+                <div
+                    class="h-12 w-[110%] -ml-[5%] bg-amber-800 rounded-full shadow-lg relative z-20 flex items-center justify-center overflow-hidden border-b-4 border-amber-900/50">
+                    <div class="absolute inset-0 bg-gradient-to-r from-amber-900 via-amber-700 to-amber-900 opacity-90">
+                    </div>
+                    <div class="w-[90%] h-1 bg-amber-900/30 rounded-full"></div>
+                </div>
+
+                <!-- Scroll Body (Parchment) -->
+                <div id="scroll-body"
+                    class="bg-[#fcf5e5] relative z-10 mx-auto w-[95%] shadow-2xl overflow-hidden transition-all duration-[2000ms] ease-out origin-top flex flex-col items-center parchment-texture"
+                    style="max-height: 0px;">
+
+                    <div class="p-8 md:p-12 text-center w-full h-full flex flex-col justify-between min-h-[400px]">
+                        <!-- Decorative Header -->
+                        <div class="mb-6">
+                            <h2 class="text-4xl md:text-5xl text-rose-900 mb-2 handwritten drop-shadow-sm opacity-90">
+                                My Buu
+                            </h2>
+                            <div class="w-1/2 h-0.5 bg-rose-900/20 mx-auto rounded-full"></div>
+                        </div>
+
+                        <!-- Typewriter Text Area -->
+                        <div
+                            class="flex-grow w-full max-h-[40vh] md:max-h-[50vh] overflow-y-auto mb-6 custom-scrollbar px-2">
+                            <p id="typewriter-text"
+                                class="text-xl md:text-2xl text-rose-950 font-serif leading-relaxed cursor italic">
+                            </p>
+                        </div>
+
+                        <!-- Wax Seal & Signature -->
+                        <div class="mt-4 flex flex-col items-center justify-center gap-4">
+                            <div
+                                class="w-16 h-16 bg-red-700 rounded-full shadow-inner border-4 border-red-800 flex items-center justify-center relative group cursor-pointer hover:scale-110 transition-transform">
+                                <div class="absolute inset-0 rounded-full border border-red-900/40 m-1"></div>
+                                <i data-lucide="heart" class="w-8 h-8 text-red-900 fill-current drop-shadow-md"></i>
+                            </div>
+
+                            <button id="restart-btn"
+                                class="text-rose-800/60 hover:text-rose-600 text-xs font-serif uppercase tracking-widest border-b border-transparent hover:border-rose-400 transition-all pb-0.5">
+                                Re-read again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scroll Bottom Roller -->
+                <div
+                    class="h-12 w-[110%] -ml-[5%] bg-amber-800 rounded-full shadow-lg relative z-20 flex items-center justify-center overflow-hidden border-t-4 border-amber-900/50 -mt-1">
+                    <div class="absolute inset-0 bg-gradient-to-r from-amber-900 via-amber-700 to-amber-900 opacity-90">
+                    </div>
+                    <div class="w-[90%] h-1 bg-amber-900/30 rounded-full"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // Custom Message - EDIT HERE
+        const messageText = "My Dearest Jayem Lab2,\n\nEvery day without you feels like a page missing from my favorite book. I find myself looking for you in crowds, in songs, and in the quiet moments of the night.\n\nDistance only makes my heart grow fonder, and I am counting down the seconds until I can hold you again. You are worth every mile, every wait, and every dream.\n\nForever yours,\nYour Love Jade❤️";
+
+        // Elements
+        const bodyBg = document.getElementById('body-bg');
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const openBtn = document.getElementById('open-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const typewriterEl = document.getElementById('typewriter-text');
+        const heartsContainer = document.getElementById('hearts-container');
+        const bgMusic = document.getElementById('bg-music');
+
+        // Scroll Elements
+        const scrollContainer = document.getElementById('scroll-container');
+        const scrollBody = document.getElementById('scroll-body');
+
+        // Config
+        let typewriterIndex = 0;
+        let typewriterInterval;
+        let isTyping = false;
+
+        // Floating Hearts Logic
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️'; // Can be an SVG or simpler char
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+            const duration = Math.random() * 2 + 3; // 3-5s
+            heart.style.animationDuration = duration + 's';
+
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+        // Create hearts periodically
+        setInterval(createHeart, 300);
+
+
+        // Page Transition: Page 1 -> Page 2
+        openBtn.addEventListener('click', () => {
+            // Play Music
+            bgMusic.play().catch(error => {
+                console.log("Audio play failed (user interaction required):", error);
+            });
+            bgMusic.volume = 0.5; // Set volume to 50%
+
+            // Fade out Page 1
+            page1.classList.add('opacity-0', 'pointer-events-none');
+
+            // Change Background to deeper romantic theme
+            bodyBg.classList.remove('from-pink-200', 'via-rose-300', 'to-red-400');
+            bodyBg.classList.add('from-red-900', 'via-rose-900', 'to-pink-900');
+
+            setTimeout(() => {
+                page1.classList.add('hidden');
+                page2.classList.remove('hidden');
+
+                // Reveal Page 2 Container
+                requestAnimationFrame(() => {
+                    page2.classList.remove('opacity-0', 'pointer-events-none');
+
+                    // Trigger Scroll Animation
+                    setTimeout(() => {
+                        scrollContainer.classList.remove('opacity-0', 'translate-y-20');
+
+                        // Unroll the scroll
+                        setTimeout(() => {
+                            scrollBody.style.maxHeight = "1000px"; // Large enough to fit content
+                        }, 500);
+
+                        // Start typing after unroll begins
+                        setTimeout(() => {
+                            startTypewriter();
+                        }, 1500);
+                    }, 100);
+                });
+            }, 800);
+        });
+
+        // Typewriter Effect
+        function startTypewriter() {
+            if (isTyping) return;
+            isTyping = true;
+            typewriterEl.textContent = '';
+            typewriterIndex = 0;
+            typewriterEl.classList.add('cursor');
+
+            typewriterInterval = setInterval(() => {
+                if (typewriterIndex < messageText.length) {
+                    const char = messageText.charAt(typewriterIndex);
+
+                    if (char === '\n') {
+                        typewriterEl.appendChild(document.createElement('br'));
+                    } else {
+                        const span = document.createElement('span');
+                        span.textContent = char;
+                        typewriterEl.appendChild(span);
+                    }
+
+                    typewriterIndex++;
+                } else {
+                    clearInterval(typewriterInterval);
+                    isTyping = false;
+                    typewriterEl.classList.remove('cursor');
+                }
+            }, 50); // Typing speed
+        }
+
+        // Restart
+        restartBtn.addEventListener('click', () => {
+            // Fade out Page 2
+            page2.classList.add('opacity-0', 'pointer-events-none');
+
+            // Reset Scroll
+            scrollBody.style.maxHeight = "0px";
+            scrollContainer.classList.add('opacity-0', 'translate-y-20');
+
+            // Reset Background
+            bodyBg.classList.remove('from-red-900', 'via-rose-900', 'to-pink-900');
+            bodyBg.classList.add('from-pink-200', 'via-rose-300', 'to-red-400');
+
+            setTimeout(() => {
+                // Reset Typewriter
+                clearInterval(typewriterInterval);
+                isTyping = false;
+                typewriterEl.textContent = '';
+
+                page2.classList.add('hidden');
+                page1.classList.remove('hidden');
+
+                requestAnimationFrame(() => {
+                    page1.classList.remove('opacity-0', 'pointer-events-none');
+                });
+            }, 800);
+        });
+
+    </script>
+</body>
+
+</html>
